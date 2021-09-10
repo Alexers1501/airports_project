@@ -33,7 +33,7 @@ public class ParseCSV {
                     String lastText = columnList.get(columnList.size() - 1);
                     columnList.set(columnList.size() - 1, lastText + ","+ splitedText[i]);
                 } else {
-                    columnList.add("~" + splitedText[i] + "~");
+                    columnList.add(splitedText[i]);
                 }
             }
             products.add(columnList);
@@ -61,13 +61,5 @@ public class ParseCSV {
             airports.add(airport);
         }
         return airports;
-    }
-    public static void main( String[] args )
-    {
-        String file = "src\\main\\airports_data.csv";
-        ArrayList<Airport> list= getAirportsList(file);
-        list.forEach(s -> s.print());
-
-
     }
 }

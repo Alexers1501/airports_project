@@ -15,7 +15,7 @@ public class Airport {
         this.price = price;
     }
     public void print(){
-        System.out.printf("%8s %10s %20s %40s %10s \n",
+        System.out.printf("%-8s %-10s %-40s %-40s %-10s \n",
                 this.year, this.make, this.model, this.description, this.price);
     }
     public String getYear() {
