@@ -1,18 +1,16 @@
 import classes.Airport;
 import parse.ParseCSV;
-import sorting.BinaryTree;
+import parse.ParseYML;
+import sorting.AirportsTree;
 import sorting.TreeVisitor;
 
+import java.io.InputStream;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
-/**
- * Hello world!
- *
- */
-public class App 
+public class App
 {
     public static void main( String[] args )
     {
@@ -20,27 +18,23 @@ public class App
 //        System.out.println("Введите строку");
 //        String str = sc.nextLine();
         String file = "src\\main\\airports_data.csv";
-        ArrayList<Airport> list= ParseCSV.getAirportsList(file);
-        System.out.println("Начальный список");
-        list.forEach(s -> s.print());
+        ArrayList<Airport> list = ParseCSV.getAirportsList(file);
 
-        BinaryTree myTree;
-        myTree = new BinaryTree(Integer.parseInt(list.get(0).getYear()),
-                list.get(0).getMake());// создать дерево (с ключом)
-        for (int i = 1; i < list.size(); i++) {
-            myTree.insert(new BinaryTree(Integer.parseInt(list.get(i).getYear()),
-                    list.get(i).getMake()));// присоединять поддеревья
-        }
-        HashMap<Integer, Airport> dict = new HashMap<>();
-        for (Airport arp : list){
-            dict.put(new Integer(arp.getYear()), arp);
-        }
-        ArrayList<Integer> sortedList = new ArrayList<>();
-        myTree.traverse(new TreeVisitor(), sortedList);
-        System.out.println("Сортированный список");
-        for (int key : sortedList){
-            dict.get(key).print();
-        }
+        String filter = "Ch";
+
+        Instant time1 = Instant.now();
+
+        //читаем yml
+        InputStream stream = App.class.getResourceAsStream("/application.yml");
+        int index = ParseYML.getFilterIndex(ParseYML.readYML(stream));
+        System.out.println("index " + index);
+
+        AirportsTree.searchAirports(list, index, filter);
+
+        Instant time2 = Instant.now();
+        long time = time2.toEpochMilli() - time1.toEpochMilli();
+        System.out.printf("Количество найденных строк: %d \n" +
+                "Время, затраченное на поиск: %d мс", list.size(), time);
 
     }
 }
