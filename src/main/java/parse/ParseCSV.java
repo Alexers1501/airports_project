@@ -1,12 +1,10 @@
 package parse;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
-import java.nio.file.Paths;
-
-import classes.Airport;
+import java.util.HashMap;
 
 public class ParseCSV {
 
@@ -15,51 +13,28 @@ public class ParseCSV {
      * @param file
      * @return List<ArrayList<String>>
      */
-    private static List<ArrayList<String>> read_csv(String file){
+    public static HashMap<Integer,ArrayList<String>> readCsv(String file, int index, String filter){
         //Загружаем строки из файла
-        List<ArrayList<String>> products = new ArrayList<>();
-        List<String> fileLines = null;
-        try {
-            fileLines = Files.readAllLines(Paths.get(file));
+        HashMap<Integer,ArrayList<String>> products = new HashMap<>();
+        try (FileReader reader = new FileReader(file);
+             BufferedReader buffer = new BufferedReader(reader, 500)){
+            while (buffer.ready()){
+                String line = buffer.readLine();
+                String[] splitedText = line.split(",");
+                ArrayList<String> columnList = new ArrayList<>();
+                for (int i = 0; i < splitedText.length; i++) {
+                    if (splitedText[i].startsWith("\"") && splitedText[i].endsWith("\""))
+                        columnList.add(splitedText[i].substring(1, splitedText[i].length() - 1));
+                    else columnList.add(splitedText[i]);
+                }
+                if ((columnList.get(index)).startsWith(filter))
+                    products.put(Integer.parseInt(columnList.get(0)), columnList);
+
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (String fileLine : fileLines) {
-            String[] splitedText = fileLine.split(",");
-            ArrayList<String> columnList = new ArrayList<String>();
-            for (int i = 0; i < splitedText.length; i++) {
-                //Если колонка начинается на кавычки или заканчиваеться на кавычки
-                if (IsColumnPart(splitedText[i])) {
-                    String lastText = columnList.get(columnList.size() - 1);
-                    columnList.set(columnList.size() - 1, lastText + ","+ splitedText[i]);
-                } else {
-                    columnList.add(splitedText[i]);
-                }
-            }
-            products.add(columnList);
-        }
         return products;
     }
-    //Проверка является ли колонка частью предыдущей колонки
-    private static boolean IsColumnPart(String text) {
-        String trimText = text.trim();
-        //Если в тексте одна ковычка и текст на нее заканчиваеться значит это часть предыдущей колонки
-        return trimText.indexOf("\"") == trimText.lastIndexOf("\"") && trimText.endsWith("\"");
-    }
 
-    /**
-     * Этот метод формирует из листа данных из файла CSV в лист с экземплярами класса Airport
-     * @param file путь до файла
-     * @return ArrayList<Airport>
-     */
-    public static ArrayList<Airport> getAirportsList(String file){
-        List<ArrayList<String>> list = read_csv(file);
-        ArrayList<Airport> airports = new ArrayList<>();
-        for(ArrayList<String> data : list){
-            Airport airport = new Airport(data.get(0), data.get(1), data.get(2),
-                    data.get(3), data.get(4));
-            airports.add(airport);
-        }
-        return airports;
-    }
 }

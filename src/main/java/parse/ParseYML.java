@@ -21,6 +21,6 @@ public class ParseYML {
     }
 
     public static Integer getFilterIndex(HashMap<String, String> map){
-        return Integer.parseInt(map.get("index"));
+        return Integer.parseInt(map.get("column"));
     }
 }

@@ -1,9 +1,8 @@
 package sorting;
 
-import classes.Airport;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class AirportsTree extends BinaryTree{
     public String value;
@@ -13,29 +12,21 @@ public class AirportsTree extends BinaryTree{
         this.value = value;
     }
 
-    public static AirportsTree createTree(ArrayList<Airport> list){
+    public static AirportsTree createTree(HashMap<Integer,ArrayList<String>> map, int index){
         AirportsTree myTree;
-        myTree = new AirportsTree(Integer.parseInt(list.get(0).getYear()),
-                list.get(0).getMake());// создать дерево (с ключом)
-        for (int i = 1; i < list.size(); i++) {
-            myTree.insert(new AirportsTree(Integer.parseInt(list.get(i).getYear()),
-                    list.get(i).getMake()));// присоединять поддеревья
+        int startKey = 0;
+        Set<Integer> keys = map.keySet();
+        for(int key: keys){
+            startKey = key;
+            break;
         }
-        return myTree;
-    }
-    public static AirportsTree createTreeWithFilter(ArrayList<Airport> list, String filter){
-        AirportsTree myTree;
-        int i = 0;
-        while(!list.get(i).getMake().startsWith(filter)){
-            i++;
+        myTree = new AirportsTree(startKey, map.get(startKey).get(index));// создать дерево (с ключом)
+
+        for (int key : keys){
+            if (key != startKey)
+                myTree.insert(new AirportsTree(key, map.get(key).get(index)));// присоединять поддеревья
         }
-        myTree = new AirportsTree(Integer.parseInt(list.get(i).getYear()),
-                list.get(i).getMake());// создать дерево (с ключом)
-        for (int j = i + 1; j < list.size(); j++) {
-            if (list.get(j).getMake().startsWith(filter))
-                myTree.insert(new AirportsTree(Integer.parseInt(list.get(j).getYear()),
-                        list.get(j).getMake()));// присоединять поддеревья
-        }
+
         return myTree;
     }
 
@@ -47,16 +38,18 @@ public class AirportsTree extends BinaryTree{
         if ( right != null ) right.insert( aTree );
         else right = aTree;
     }
-    public static void searchAirports(ArrayList<Airport> list, int idx, String filter){
-        AirportsTree myTree = AirportsTree.createTreeWithFilter(list, filter);
-        HashMap<Integer, Airport> dict = new HashMap<>();
-        for (Airport arp : list){
-            dict.put(new Integer(arp.getYear()), arp);
-        }
+    public static void searchAirports(HashMap<Integer,ArrayList<String>> list, int idx){
+        AirportsTree myTree = AirportsTree.createTree(list, idx);
+
         ArrayList<Integer>  sortedList = new ArrayList<>();
         myTree.traverse(new TreeVisitor(), sortedList);
         for (int key : sortedList){
-            dict.get(key).print();
+            printAirport(list.get(key));
         }
+    }
+    private static void printAirport(ArrayList<String> list){
+        System.out.printf("%-8s %-40s %-15s %-25s %-5s %-5s %-20s %-20s %-5s %-5s %-5s %-20s %-15s %-20s \n",
+                list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), list.get(5), list.get(6),
+                list.get(7), list.get(8), list.get(9), list.get(10), list.get(11), list.get(12), list.get(13));
     }
 }
