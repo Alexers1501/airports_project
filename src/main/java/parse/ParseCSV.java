@@ -14,7 +14,6 @@ public class ParseCSV {
      * @return List<ArrayList<String>>
      */
     public static HashMap<Integer,ArrayList<String>> readCsv(String file, int index, String filter){
-        //Загружаем строки из файла
         HashMap<Integer,ArrayList<String>> products = new HashMap<>();
         try (FileReader reader = new FileReader(file);
              BufferedReader buffer = new BufferedReader(reader, 500)){

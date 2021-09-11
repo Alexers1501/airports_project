@@ -3,25 +3,40 @@ package sorting;
 import java.util.ArrayList;
 
 public class BinaryTree {
-    public BinaryTree left;
-    public BinaryTree right;
+    private BinaryTree left;
+    private BinaryTree right;
     public int key;
+    String value;
 
     public BinaryTree(int k) {
+
         key = k;
     }
+    public BinaryTree(int k, String value) {
 
-    public void insert( BinaryTree aTree) {
+        key = k;
+        this.value = value;
+    }
+
+    protected void insertByKey( BinaryTree aTree) {
         if ( aTree.key < key )
-            if ( left != null ) left.insert( aTree );
+            if ( left != null ) left.insertByKey( aTree );
             else left = aTree;
         else
-        if ( right != null ) right.insert( aTree );
+        if ( right != null ) right.insertByKey( aTree );
         else right = aTree;
     }
 
+    public void insertByValue(BinaryTree aTree) {
+        if ( aTree.value.compareTo(value) < 0 )
+            if ( this.left != null ) this.left.insertByValue( aTree );
+            else this.left = aTree;
+        else
+        if ( this.right != null ) this.right.insertByValue( aTree );
+        else this.right = aTree;
+    }
 
-    public void traverse(TreeVisitor visitor, ArrayList<Integer>  sortList) {
+    protected void traverse(TreeVisitor visitor, ArrayList<Integer>  sortList) {
         if ( left != null)
             left.traverse( visitor, sortList);
 

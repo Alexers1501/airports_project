@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class AirportsTree extends BinaryTree{
-    public String value;
 
     public AirportsTree(int k, String value) {
-        super(k);
-        this.value = value;
+        super(k, value);
     }
 
-    public static AirportsTree createTree(HashMap<Integer,ArrayList<String>> map, int index){
+    protected static AirportsTree createTree(HashMap<Integer,ArrayList<String>> map, int index){
         AirportsTree myTree;
         int startKey = 0;
         Set<Integer> keys = map.keySet();
@@ -24,20 +22,12 @@ public class AirportsTree extends BinaryTree{
 
         for (int key : keys){
             if (key != startKey)
-                myTree.insert(new AirportsTree(key, map.get(key).get(index)));// присоединять поддеревья
+                myTree.insertByValue(new AirportsTree(key, map.get(key).get(index)));// присоединять поддеревья
         }
 
         return myTree;
     }
 
-    public void insert( AirportsTree aTree) {
-        if ( aTree.value.compareTo(value) < 0 )
-            if ( left != null ) left.insert( aTree );
-            else left = aTree;
-        else
-        if ( right != null ) right.insert( aTree );
-        else right = aTree;
-    }
     public static void searchAirports(HashMap<Integer,ArrayList<String>> list, int idx){
         AirportsTree myTree = AirportsTree.createTree(list, idx);
 
@@ -47,7 +37,7 @@ public class AirportsTree extends BinaryTree{
             printAirport(list.get(key));
         }
     }
-    private static void printAirport(ArrayList<String> list){
+    protected static void printAirport(ArrayList<String> list){
         System.out.printf("%-8s %-40s %-15s %-25s %-5s %-5s %-20s %-20s %-5s %-5s %-5s %-20s %-15s %-20s \n",
                 list.get(0), list.get(1), list.get(2), list.get(3), list.get(4), list.get(5), list.get(6),
                 list.get(7), list.get(8), list.get(9), list.get(10), list.get(11), list.get(12), list.get(13));

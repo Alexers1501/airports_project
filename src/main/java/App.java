@@ -10,8 +10,7 @@ import java.util.Scanner;
 
 public class App
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ){
         Scanner sc = new Scanner(System.in);
         System.out.println("Введите строку: ");
         String filter = sc.nextLine();
@@ -22,7 +21,7 @@ public class App
         //читаем yml
         int index = ParseYML.getFilterIndex(ParseYML.readYML(stream)) - 1;
         if (args.length != 0 && args[0] != null)
-            index = Integer.parseInt(args[0]);
+            index = Integer.parseInt(args[0]) - 1;
 
         HashMap<Integer,ArrayList<String>> map = ParseCSV.readCsv(file, index, filter);
 
@@ -35,4 +34,5 @@ public class App
                 "Время, затраченное на поиск: %d мс", map.size(), time);
 
     }
+
 }
