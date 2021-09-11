@@ -2,6 +2,9 @@ package sorting;
 
 import java.util.ArrayList;
 
+/**
+ * Базовый класс для работы с двоиным деревом
+ */
 public class BinaryTree {
     private BinaryTree left;
     private BinaryTree right;
@@ -18,6 +21,10 @@ public class BinaryTree {
         this.value = value;
     }
 
+    /**
+     * вставка поддерева по ключу
+     * @param aTree
+     */
     protected void insertByKey( BinaryTree aTree) {
         if ( aTree.key < key )
             if ( left != null ) left.insertByKey( aTree );
@@ -27,6 +34,10 @@ public class BinaryTree {
         else right = aTree;
     }
 
+    /**
+     * вставка поддерева по значению
+     * @param aTree
+     */
     public void insertByValue(BinaryTree aTree) {
         if ( aTree.value.compareTo(value) < 0 )
             if ( this.left != null ) this.left.insertByValue( aTree );
@@ -36,6 +47,11 @@ public class BinaryTree {
         else this.right = aTree;
     }
 
+    /**
+     * Метод реализует обход всего дерева по поддеревьям
+     * @param visitor
+     * @param sortList
+     */
     protected void traverse(TreeVisitor visitor, ArrayList<Integer>  sortList) {
         if ( left != null)
             left.traverse( visitor, sortList);

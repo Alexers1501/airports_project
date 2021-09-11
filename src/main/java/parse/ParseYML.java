@@ -1,26 +1,54 @@
 package parse;
 
-import org.yaml.snakeyaml.Yaml;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ParseYML {
-    public static HashMap<String, String> readYML(InputStream stream){
-        Yaml yml = new Yaml();
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            return yml.load(reader.readLine());
+/**
+ * Класс для работы с yml файлами
+ */
+public class ParseYML{
+    /**
+     * Метод читает yml файл и возвращает в виде словаря
+     * @param file
+     * @return
+     */
+    private static HashMap<String, String> readYML(String file) {
+        HashMap<String,String> map = new HashMap<>();
+        try (FileReader reader = new FileReader(file);
+             BufferedReader buffer = new BufferedReader(reader, 10)) {
+            while (buffer.ready()) {
+                String line = buffer.readLine();
+                String[] splitedText = line.split(": ");
+                ArrayList<String> columnList = new ArrayList<>();
+                for (int i = 0; i < splitedText.length; i++) {
+                    if (splitedText[i].startsWith("\"") && splitedText[i].endsWith("\""))
+                        columnList.add(splitedText[i].substring(1, splitedText[i].length() - 1));
+                    else columnList.add(splitedText[i]);
+                }
+                map.put(columnList.get(0), columnList.get(1));
+
+            }
         } catch (IOException e) {
-            System.out.printf("Ошибка чтения yml: %s \n", e.getMessage());
+            System.out.printf("Произошла ошибка в чтении YML: %s \n ", e.getMessage());
+        } finally {
+            return map;
         }
-        return new HashMap<String, String>();
     }
 
-    public static Integer getFilterIndex(HashMap<String, String> map){
-        return Integer.parseInt(map.get("column"));
+    /**
+     * Метод возвращает значение из карты по переданном индексу
+     * @param
+     * @return
+     */
+    public static int getFilterIndex(String file){
+        HashMap<String, String> map = readYML(file);
+        try {
+            return Integer.parseInt(map.get("column"));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.printf("Файл yml пуст: %s \n", e.getMessage());
+        }
+        return 2;
     }
 }

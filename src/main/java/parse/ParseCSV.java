@@ -9,12 +9,12 @@ import java.util.HashMap;
 public class ParseCSV {
 
     /**
-     * Этот метод читает данные из файла CSV и записывает их в список
+     * Этот метод читает данные из файла CSV и записывает их в словарь
      * @param file
-     * @return List<ArrayList<String>>
+     * @return map: карта с прочитанными данными
      */
     public static HashMap<Integer,ArrayList<String>> readCsv(String file, int index, String filter){
-        HashMap<Integer,ArrayList<String>> products = new HashMap<>();
+        HashMap<Integer,ArrayList<String>> map = new HashMap<>();
         try (FileReader reader = new FileReader(file);
              BufferedReader buffer = new BufferedReader(reader, 500)){
             while (buffer.ready()){
@@ -27,13 +27,14 @@ public class ParseCSV {
                     else columnList.add(splitedText[i]);
                 }
                 if ((columnList.get(index)).startsWith(filter))
-                    products.put(Integer.parseInt(columnList.get(0)), columnList);
+                    map.put(Integer.parseInt(columnList.get(0)), columnList);
 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.printf("Произошла ошибка в чтении CSV: %s \n ", e.getMessage());
+        }finally {
+            return map;
         }
-        return products;
     }
 
 }
